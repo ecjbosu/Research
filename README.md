@@ -1,5 +1,9 @@
 # Research
 =============
 
-Research code posted here is complimentary of current and past reaearch.  It is for reference and review only.
+Research code posted here is complimentary of current and past reaearch.  This is for reference and review only.
+
+If you have any question please contact us at ecjbosu@aol.com
+
+
 
