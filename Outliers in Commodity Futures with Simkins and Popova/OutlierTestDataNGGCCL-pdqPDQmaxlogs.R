@@ -76,9 +76,9 @@ termStructurePromptShift <- function(obj, maxtenor) {
 #####Input section##############################################################
 maxcurve<-60;
 
-user='ecjbosu';
-passwd='cHJvZmVzc29y';
-host='fsealshare';
+#user='ecjbosu';
+#passwd='XXXXXXXXXX';
+#host='fsealshare';
 #host ='73.150.229.65';
 rdatadir ='/Share/NAS/work/RData/';
 outdir  <- "/home/byersjw/data2/";
@@ -89,8 +89,8 @@ Last.Date  <-"2017-03-20"; # this was the last date that this analysis was
 first.yr <- 2007;
 #ticker <- paste(c("NG","CL","GC"),collapse="','");
 commodity <- "NG"
-driverClass <- "com.mysql.jdbc.Driver";
-schema <- 'CommodityPrices';
+#driverClass <- "com.mysql.jdbc.Driver";
+#schema <- 'CommodityPrices';
 
 ###model selection parameters
 maxit.iloop=30;
@@ -100,7 +100,7 @@ maxit.oloop=35;
 #####Generate extended Inputs###################################################
 ticker <- paste(c(commodity),collapse="','");
 
-sqlstr <-paste("select TradeDate, CONTRACT, Settle as Close, ContractDate,
+#sqlstr <-paste("select TradeDate, CONTRACT, Settle as Close, ContractDate,
                ContractQuoteName, Prompt, Month, Year
                from CommodityPrices.Futures where TradeDate> '", First.Date,
                "' and TradeDate <= '",Last.Date, "' and CONTRACT in ('",
@@ -109,24 +109,25 @@ sqlstr <-paste("select TradeDate, CONTRACT, Settle as Close, ContractDate,
 ################################################################################
 
 #####Get Data, massage, and calculate returns###################################
-out <- JDBC.Pull(sqlstr, host, port=3306, schema, user,
-                             rsecurity()$base64decode(passwd),
-                             driverClass, dbInfoFlag=F);
+#out <- JDBC.Pull(sqlstr, host, port=3306, schema, user,
+#                             rsecurity()$base64decode(passwd),
+#                             driverClass, dbInfoFlag=F);
 #rebuild ContractQuoteName to sort correctly
-out$ContractQuoteName <- paste(as.numeric(
-  substr(out$ContractQuoteName,4,5))+2000,
-  substr(out$ContractQuoteName,1,3),sep='.');
+#out$ContractQuoteName <- paste(as.numeric(
+#  substr(out$ContractQuoteName,4,5))+2000,
+#  substr(out$ContractQuoteName,1,3),sep='.');
 #for some commodity need to check for 0 and Na
-out <- out[!is.na(out$Settle),];
-out <- out[out$Settle!=0,];
+#out <- out[!is.na(out$Settle),];
+#out <- out[out$Settle!=0,];
 #build zoo time series object, easier to do some things like this pivot
-retZoo <- read.zoo(file=out[, c(1,3,5)], split="ContractQuoteName");
+#retZoo <- read.zoo(file=out[, c(1,3,5)], split="ContractQuoteName");
 #retZoo <- lapply(retZoo, FUN=Return.calculate, method="log");
 ### take logs
-retZoo <- log(retZoo);
+#retZoo <- log(retZoo);
 
 ################################################################################
-
+###read the RData file instead using menu
+### CLtsoout2.RData or NGtsoout2.RD
 #####Generate Summary Statistics################################################
 ###Univariate Statistics
 summaryStats <- do.call(rbind.data.frame,lapply(retZoo,
