@@ -112,48 +112,49 @@ mVaR.MM(w ,
 GVaR.MM(w, summaryStatsRes$Arithmetic.Mean[1], summaryStatsRes$Stdev[1], alpha)
 
 
+###code below was test code
 #test for sigfinance
-w = 1000000;
-Mean = 0.0001898251;
-Stdev = 0.01612464;
-ExKurtosis = 3.946156;
-Skewness = -0.1373454;
-
-GVaR = GVaR.MM(w,Mean,Stdev^2, .95)
-GVaR
-MVaR = mVaR.MM(w,Mean,Stdev^2, 0,0, .95);
-mVaR.MM(w, Mean, Stdev^2, 0, 3 * Stdev^4, .95)
-#shoud be equal to GVaR
-GVaR==MVaR
-MVaR
-
-#corrected exkurt calc 
-mVaR.MM1 = function(w, mu, sigma, M3, M4, p ){
-  skew = M3;#skewness.MM(w,sigma,M3);
-  exkurt = M4;#kurtosis.MM(w,sigma,M4);
-  z = qnorm(1-p);
-  zc = z + (1/6)*(z^2 -1)*skew
-  Zcf = zc + (1/24)*(z^3 - 3*z)*exkurt - (1/36)*(2*z^3 - 5*z)*skew^2;
-  return ( -multivariate_mean(w,mu) - Zcf*StdDev.MM(w,sigma)  )
-}
-skewness.MM=function(w,sigma,M3){
-  return( ( t(w)%*%M3%*%(w%x%w) )/ (StdDev.MM(w,sigma))^3         )
-}
-
-kurtosis.MM=function(w,sigma,M4){
-  return(  ( t(w)%*%M4%*%(w%x%w%x%w) )/ (StdDev.MM(w,sigma))^4    )
-}
-
-#call revised mVAR.MM with m3 and m4 equal 0
-MVaR1 = mVaR.MM1(w,Mean,Stdev, 0,0, .95);
-#shoud be equal to GVaR
-GVaR==MVaR1
-MVaR1
-
-#with m3 and m4 not zero
-MVaR1 = mVaR.MM1(w, Mean, Stdev, Skewness, ExKurtosis, .95);
-MVaR1
-
-mapply(c(0,.0001,.001,.01,.1), c(0,.0001,.001,.01,.1), FUN=function(x,y) mVaR.MM1(1000000,0,Stdev,x,y,.95))
-mapply(c(0,.0001,.001,.01,.1), c(0,0,0,0,0), FUN=function(x,y) mVaR.MM1(1000000,0,Stdev,x,y,.95))
+# w = 1000000;
+# Mean = 0.0001898251;
+# Stdev = 0.01612464;
+# ExKurtosis = 3.946156;
+# Skewness = -0.1373454;
+# 
+# GVaR = GVaR.MM(w,Mean,Stdev^2, .95)
+# GVaR
+# MVaR = mVaR.MM(w,Mean,Stdev^2, 0,0, .95);
+# mVaR.MM(w, Mean, Stdev^2, 0, 3 * Stdev^4, .95)
+# #shoud be equal to GVaR
+# GVaR==MVaR
+# MVaR
+# 
+# #corrected exkurt calc 
+# mVaR.MM1 = function(w, mu, sigma, M3, M4, p ){
+#   skew = M3;#skewness.MM(w,sigma,M3);
+#   exkurt = M4;#kurtosis.MM(w,sigma,M4);
+#   z = qnorm(1-p);
+#   zc = z + (1/6)*(z^2 -1)*skew
+#   Zcf = zc + (1/24)*(z^3 - 3*z)*exkurt - (1/36)*(2*z^3 - 5*z)*skew^2;
+#   return ( -multivariate_mean(w,mu) - Zcf*StdDev.MM(w,sigma)  )
+# }
+# skewness.MM=function(w,sigma,M3){
+#   return( ( t(w)%*%M3%*%(w%x%w) )/ (StdDev.MM(w,sigma))^3         )
+# }
+# 
+# kurtosis.MM=function(w,sigma,M4){
+#   return(  ( t(w)%*%M4%*%(w%x%w%x%w) )/ (StdDev.MM(w,sigma))^4    )
+# }
+# 
+# #call revised mVAR.MM with m3 and m4 equal 0
+# MVaR1 = mVaR.MM1(w,Mean,Stdev, 0,0, .95);
+# #shoud be equal to GVaR
+# GVaR==MVaR1
+# MVaR1
+# 
+# #with m3 and m4 not zero
+# MVaR1 = mVaR.MM1(w, Mean, Stdev, Skewness, ExKurtosis, .95);
+# MVaR1
+# 
+# mapply(c(0,.0001,.001,.01,.1), c(0,.0001,.001,.01,.1), FUN=function(x,y) mVaR.MM1(1000000,0,Stdev,x,y,.95))
+# mapply(c(0,.0001,.001,.01,.1), c(0,0,0,0,0), FUN=function(x,y) mVaR.MM1(1000000,0,Stdev,x,y,.95))
 
