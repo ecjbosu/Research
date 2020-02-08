@@ -109,8 +109,8 @@ out$ContractQuoteName <- paste(as.numeric(
   substr(out$ContractQuoteName,4,5))+2000,
   substr(out$ContractQuoteName,1,3),sep='.');
 #for some commodity need to check for 0 and Na
-out <- out[!is.na(out$Settle),];
-out <- out[out$Settle!=0,];
+out <- out[!is.na(out$Close),];
+out <- out[out$Close!=0,];
 #build zoo time series object, easier to do some things like this pivot
 retZoo <- read.zoo(file=out[, c(1,3,5)], split="ContractQuoteName");
 retZoo <- lapply(retZoo, FUN=Return.calculate, method="log");
@@ -126,3 +126,4 @@ pt = data.frame(levels=na.omit(pr[,n])[2:length(na.omit(pr[,n]))],
 ll = na.omit(zoo(pt,order.by=as.Date(rownames(pt))));
 plot(ll, type="l", col="black", main = names(retZoo)[n],
              xlab='Date');
+save(out,retZoo,ll,pt,pr,n,file='/home/byersjw/data/clforward20190302.RData')

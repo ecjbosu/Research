@@ -17,6 +17,7 @@ require(grDevices)
 require(plotrix)
 require(fBasics)
 library(tseries)
+library(RMariaDB)
 
 setSource <- function (srcPath=getwd(), srcDirs, include.dirs=T ){
 
@@ -36,6 +37,12 @@ setSource <- function (srcPath=getwd(), srcDirs, include.dirs=T ){
 
 }
 
+rootDBPath 	= '/Share/metamarts';
+workEnv 	= 'production';
+dbSubPath       = '';
+
+basePath = paste(corePath, '/Library', sep='');
+setwd("/home/byersjw/work/repo/fseal/projects/scripts");
 setSource(srcPath='', srcDirs=sub('scripts','sources',getwd()));
 setJarClasses()
 
@@ -101,6 +108,13 @@ sqlstr <-paste("select TradeDate, CONTRACT, Settle as Close, ContractDate,
 ################################################################################
 
 #####Get Data, massage, and calculate returns###################################
+# con <- dbConnect(drv=RMariaDB::MariaDB(), host=host, dbname=schema, port=3306, username=user,
+#                  password=rsecurity()$base64decode(passwd));
+# res <- dbSendQuery(con, sqlstr);
+# out <- dbFetch(res, n=-1);
+# dbClearResult(res);
+# dbDisconnect(con);
+
 out <- JDBC.Pull(sqlstr, host, port=3306, schema, user,
                  rsecurity()$base64decode(passwd),
                  driverClass, dbInfoFlag=F);
@@ -109,8 +123,8 @@ out$ContractQuoteName <- paste(as.numeric(
   substr(out$ContractQuoteName,4,5))+2000,
   substr(out$ContractQuoteName,1,3),sep='.');
 #for some commodity need to check for 0 and Na
-out <- out[!is.na(out$Settle),];
-out <- out[out$Settle!=0,];
+out <- out[!is.na(out$Close),];
+out <- out[out$Close!=0,];
 #build zoo time series object, easier to do some things like this pivot
 retZoo <- read.zoo(file=out[, c(1,3,5)], split="ContractQuoteName");
 retZoo <- lapply(retZoo, FUN=Return.calculate, method="log");
@@ -127,3 +141,5 @@ ll = na.omit(zoo(pt,order.by=as.Date(rownames(pt))));
 plot(ll, type="l", col="black", main = names(retZoo)[n],
              xlab='Date');
 
+
+save(out,retZoo,ll,pt,pr,n,file='/home/byersjw/data/ngforward20190302.RData')
